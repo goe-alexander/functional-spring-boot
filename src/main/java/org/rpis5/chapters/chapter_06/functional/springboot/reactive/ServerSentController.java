@@ -11,30 +11,21 @@ import java.util.Map;
 
 @RestController
 public class ServerSentController {
-    private Map<String, StocksServices> stringStocksServicesMap;
+  private Map<String, StocksServices> stringStocksServicesMap;
 
-    @GetMapping("/sse/stocks")
-    public Flux<ServerSentEvent<?>> streamStocks() {
-        stringStocksServicesMap = new HashMap<>();
-        stringStocksServicesMap.put("defaultService", new StocksServiceImpl());
-        return Flux
-                .fromIterable(stringStocksServicesMap.values())
-                .delaySequence(Duration.ofMillis(250))
-                .flatMap(StocksServices::stream)
-                .<ServerSentEvent<?>>map(item ->
-                    ServerSentEvent
-                            .builder()
-                            .event(item.getType())
-                            .id(item.getId())
-                            .build()
-                )
-                .startWith(
-                        ServerSentEvent
-                            .builder()
-                            .event("Stocks")
-                            .data(stringStocksServicesMap.keySet())
-                            .build()
-                );
-    }
-
+  @GetMapping("/sse/stocks")
+  public Flux<ServerSentEvent<?>> streamStocks() {
+    stringStocksServicesMap = new HashMap<>();
+    stringStocksServicesMap.put("defaultService", new StocksServiceImpl());
+    return Flux.fromIterable(stringStocksServicesMap.values())
+        .delaySequence(Duration.ofMillis(250))
+        .flatMap(StocksServices::stream)
+        .<ServerSentEvent<?>>map(
+            item -> ServerSentEvent.builder().event(item.getType()).id(item.getId()).build())
+        .startWith(
+            ServerSentEvent.builder()
+                .event("Stocks")
+                .data(stringStocksServicesMap.keySet())
+                .build());
+  }
 }

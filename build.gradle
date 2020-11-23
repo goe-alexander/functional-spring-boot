@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '2.2.1.RELEASE'
+		springBootVersion = '2.3.4.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -27,6 +27,8 @@ repositories {
 
 ext {
 	reactorExtraVersion = '3.2.0.RELEASE'
+	springDataJdbcVersion = '1.0.0.RELEASE'
+	jdbiVersion = '3.3.0'
 }
 
 dependencies {
@@ -34,10 +36,20 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-webflux')
 	compile('org.springframework.boot:spring-boot-starter-actuator')
 	compile('org.springframework.security:spring-security-core')
+	compile('org.springframework.boot:spring-boot-starter-jdbc')
+	compile("org.springframework.data:spring-data-jdbc:${springDataJdbcVersion}")
+	compile("org.jdbi:jdbi3-core:${jdbiVersion}")
+	compile("org.jdbi:jdbi3-sqlobject:${jdbiVersion}")
 	compile("io.projectreactor.addons:reactor-extra:${reactorExtraVersion}")
-	
-    compileOnly('org.projectlombok:lombok:1.18.16')
+	compile('org.springframework.boot:spring-boot-starter-data-r2dbc')
+	compile('io.r2dbc:r2dbc-h2')
+
+	compileOnly('org.projectlombok:lombok:1.18.16')
 	annotationProcessor('org.projectlombok:lombok:1.18.16')
+	// In-memory DB for demonstration purposes
+
+	runtime('com.h2database:h2')
+
 
   	testCompile('io.projectreactor:reactor-test')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
